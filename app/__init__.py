@@ -57,3 +57,7 @@ if 'graphite' in app.config['USER_CONFIG']:
 # load dashboard and graphite endpoint
 from app.dashboard.views import DashboardResource
 app.register_blueprint(DashboardResource.as_blueprint())
+
+from app.pool.views import PoolResource
+app.register_blueprint(PoolResource.as_blueprint())
+print app.url_map
