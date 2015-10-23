@@ -61,4 +61,10 @@ app.register_blueprint(DashboardResource.as_blueprint())
 from app.pool.views import PoolsResource
 app.register_blueprint(PoolsResource.as_blueprint())
 
-print app.url_map
+from app.snap.views import SnapsResource
+app.register_blueprint(SnapsResource.as_blueprint())
+
+from app.object.views import ObjectsResource
+app.register_blueprint(ObjectsResource.as_blueprint())
+
+#print app.url_map

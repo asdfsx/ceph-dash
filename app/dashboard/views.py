@@ -43,6 +43,7 @@ class CephClusterCommand(dict):
 
     def __init__(self, cluster, **kwargs):
         dict.__init__(self)
+        print kwargs
         ret, buf, err = cluster.mon_command(json.dumps(kwargs), '', timeout=5)
         if ret != 0:
             self['err'] = err
@@ -106,13 +107,11 @@ class DashboardResource(ApiResource):
     def get(self):
         with Rados(**self.clusterprop) as cluster:
             cluster_status = CephClusterCommand(cluster, prefix='status', format='json')
-            print cluster_status
             if 'err' in cluster_status:
                 abort(500, cluster_status['err'])
 
             # check for unhealthy osds and get additional osd infos from cluster
             total_osds = cluster_status['osdmap']['osdmap']['num_osds']
-            print total_osds
             in_osds = cluster_status['osdmap']['osdmap']['num_up_osds']
             up_osds = cluster_status['osdmap']['osdmap']['num_in_osds']
 

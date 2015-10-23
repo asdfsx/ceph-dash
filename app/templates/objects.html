@@ -11,7 +11,7 @@
 <body>
   <div class="container">
     <div class="well">
-      <h1>Ceph Pool</h1>
+      <h1>Ceph Snap in Pool: {{ poolname }}</h1>
       <p>
         <!--show warning icon if data is getting to old-->
         <span id="last_update" style="display:none;" class="glyphicon glyphicon-warning-sign icon-warn"></span>
@@ -23,28 +23,23 @@
     <div class="panel panel-primary">
         <div class="panel-body">
             <a href="/">Dash</a>
-            Pool
+            <a href="/pools">Pool</a>
         </div>
     </div>
 
-    <!--START CEPH CLUSTER POOLS-->
+    <!--START CEPH CLUSTER POOL SNAPS-->
     <div class="panel panel-primary">
       <div class="panel-heading cd-collapsable">
         <h3 class="panel-title">
-          Ceph Cluster Pools
+          Ceph Cluster Pool Snaps
         </h3>
       </div>
       <!--here we add the overall status-->
       <div class="panel-body">
           <table class="table table-condensed">
-          {% for pool in pools %}
+          {% for obj in objects %}
           <tr>
-              <td>{{ pool }}<td>
-              <td>
-                  <a href="/pools/{{ pool }}">status</a>
-                  <a href="/snaps/{{ pool }}">snaps</a>
-                  <a href="/objects/{{ pool }}">objects</a>
-              </td>
+              <td>{{ obj.key }}<td>
           </tr>
           {% endfor %}
           </table>

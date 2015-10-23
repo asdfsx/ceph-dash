@@ -6,6 +6,8 @@ import json
 from flask import request
 from flask import render_template
 from flask import abort
+from flask import redirect
+from flask import url_for
 from flask import jsonify
 from flask import current_app
 from flask.views import MethodView
@@ -36,31 +38,26 @@ class CephClusterProperties(dict):
             self['name'] = config['client_name']
 
 
-def list_pools(cluster):
-    pools = cluster.list_pools()
-    return pools
-
-
-def getpoolstatus(cluster, poolname):
+def getsnaplist(cluster, poolname):
     with cluster.open_ioctx(poolname) as ioctxobj:
-        status = ioctxobj.get_stats()
-        return status
+        snaps = ioctxobj.list_snaps()
+        return snaps
 
 
-class PoolsResource(ApiResource):
+class SnapsResource(ApiResource):
     """
     Endpoint that shows overall cluster status
     """
 
-    endpoint = 'pools'
-    url_prefix = '/pools'
+    endpoint = 'snaps'
+    url_prefix = '/snaps'
     url_rules = {
-        'poollist': {
+        'snaplist': {
             'rule': '/',
             'defaults': {'poolname': None},
         },
-        'poolstatus':{
-            'rule': '/<poolname>'
+        'snaplist': {
+            'rule': '/<string:poolname>'
         }
     }
 
@@ -71,11 +68,10 @@ class PoolsResource(ApiResource):
 
     def get(self, poolname):
         if poolname is None:
-            with Rados(**self.clusterprop) as cluster:
-                pools = list_pools(cluster)
-                return render_template('pools.html', pools=pools, config=self.config)
+            print '-------', url_for('poollist')
+            return redirect(url_for('poollist'))
         else:
             with Rados(**self.clusterprop) as cluster:
-                poolstatus = getpoolstatus(cluster, str(poolname))
-                return render_template('pool.html', poolname=poolname, 
-                                       poolstatus=poolstatus, config=self.config)
+                snaps = getsnaplist(cluster, str(poolname))
+                return render_template('snaps.html', poolname=poolname, 
+                                       snaps=snaps, config=self.config)

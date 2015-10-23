@@ -6,6 +6,8 @@ import json
 from flask import request
 from flask import render_template
 from flask import abort
+from flask import redirect
+from flask import url_for
 from flask import jsonify
 from flask import current_app
 from flask.views import MethodView
@@ -36,31 +38,26 @@ class CephClusterProperties(dict):
             self['name'] = config['client_name']
 
 
-def list_pools(cluster):
-    pools = cluster.list_pools()
-    return pools
-
-
-def getpoolstatus(cluster, poolname):
+def getobjectlist(cluster, poolname):
     with cluster.open_ioctx(poolname) as ioctxobj:
-        status = ioctxobj.get_stats()
-        return status
+        objects = ioctxobj.list_objects()
+        return objects
 
 
-class PoolsResource(ApiResource):
+class ObjectsResource(ApiResource):
     """
     Endpoint that shows overall cluster status
     """
 
-    endpoint = 'pools'
-    url_prefix = '/pools'
+    endpoint = 'objects'
+    url_prefix = '/objects'
     url_rules = {
-        'poollist': {
+        'objectlist': {
             'rule': '/',
             'defaults': {'poolname': None},
         },
-        'poolstatus':{
-            'rule': '/<poolname>'
+        'objectlist':{
+            'rule': '/<string:poolname>'
         }
     }
 
@@ -71,11 +68,9 @@ class PoolsResource(ApiResource):
 
     def get(self, poolname):
         if poolname is None:
-            with Rados(**self.clusterprop) as cluster:
-                pools = list_pools(cluster)
-                return render_template('pools.html', pools=pools, config=self.config)
+            return redirect(url_for('pools'))
         else:
             with Rados(**self.clusterprop) as cluster:
-                poolstatus = getpoolstatus(cluster, str(poolname))
-                return render_template('pool.html', poolname=poolname, 
-                                       poolstatus=poolstatus, config=self.config)
+                objects = getobjectlist(cluster, str(poolname))
+                return render_template('objects.html', poolname=poolname, 
+                                       objects=objects, config=self.config)
