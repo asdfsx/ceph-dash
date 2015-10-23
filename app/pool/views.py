@@ -38,28 +38,30 @@ class CephClusterProperties(dict):
 
 def list_pools(cluster):
     pools = cluster.list_pools()
-    result = {}
-    for pool in pools:
-        result[pool] = getpoolstatus(cluster, pool)
-    return result
+    return pools
 
 
 def getpoolstatus(cluster, poolname):
+    print type(poolname), poolname
     with cluster.open_ioctx(poolname) as ioctxobj:
         status = ioctxobj.get_stats()
         return status
 
 
-class PoolResource(ApiResource):
+class PoolsResource(ApiResource):
     """
     Endpoint that shows overall cluster status
     """
 
-    endpoint = 'pool'
-    url_prefix = '/pool'
+    endpoint = 'pools'
+    url_prefix = '/pools'
     url_rules = {
-        'index': {
+        'poollist': {
             'rule': '/',
+            'defaults': {'poolname': None},
+        },
+        'poolstatus':{
+            'rule': '/<string:poolname>'
         }
     }
 
@@ -68,12 +70,13 @@ class PoolResource(ApiResource):
         self.config = current_app.config['USER_CONFIG']
         self.clusterprop = CephClusterProperties(self.config)
 
-    def get(self):
-        with Rados(**self.clusterprop) as cluster:
-            pools = list_pools(cluster)
-
-            if request.mimetype == 'application/json':
-                return jsonify(pools)
-            else:
-                return render_template('pool.html', pools=pools, config=self.config)
-
+    def get(self, poolname):
+        if poolname is None:
+            with Rados(**self.clusterprop) as cluster:
+                pools = list_pools(cluster)
+                return render_template('pools.html', pools=pools, config=self.config)
+        else:
+            with Rados(**self.clusterprop) as cluster:
+                poolstatus = getpoolstatus(cluster, str(poolname))
+                return render_template('pool.html', poolname=poolname, 
+                                       poolstatus=poolstatus, config=self.config)

@@ -23,30 +23,29 @@
     <div class="panel panel-primary">
         <div class="panel-body">
             <a href="/">Dash</a>
-            <a href="/pools">Pool</a>
+            Pool
         </div>
     </div>
 
-    <!--START CEPH CLUSTER POOL STATUS-->
+    <!--START CEPH CLUSTER POOLS-->
     <div class="panel panel-primary">
       <div class="panel-heading cd-collapsable">
         <h3 class="panel-title">
-          Ceph Cluster POOL Status
+          Ceph Cluster Pools
         </h3>
       </div>
       <!--here we add the overall status-->
-      <div class="panel-body" id="overall_status">
-          <div class="panel-row">
-              {{ poolname }}
-              <table class="table table-condensed">
-              {% for key in poolstatus %}
-              <tr>
-                  <td class="text-success">{{ key }}</td>
-                  <td class="text-success">{{ poolstatus[key] }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-          </div>
+      <div class="panel-body">
+          <table class="table table-condensed">
+          {% for pool in pools %}
+          <tr>
+              <td>{{ pool }}<td>
+              <td>
+                  <a href="/pools/{{ pool }}">status</a>
+              </td>
+          </tr>
+          {% endfor %}
+          </table>
       </div>
     </div>
     <!--END CEPH OVERALL CLUSTER STATUS-->

@@ -58,6 +58,7 @@ if 'graphite' in app.config['USER_CONFIG']:
 from app.dashboard.views import DashboardResource
 app.register_blueprint(DashboardResource.as_blueprint())
 
-from app.pool.views import PoolResource
-app.register_blueprint(PoolResource.as_blueprint())
+from app.pool.views import PoolsResource
+app.register_blueprint(PoolsResource.as_blueprint())
+
 print app.url_map
