@@ -13,6 +13,7 @@ class ApiResource(MethodView):
         for endpoint, options in cls.url_rules.iteritems():
             print endpoint, options
             url_rule = options.get('rule', '')
+            methods = options.get('method',['GET','POST'])
             defaults = options.get('defaults', {})
-            bp.add_url_rule(url_rule, defaults=defaults, view_func=cls.as_view(endpoint))
+            bp.add_url_rule(url_rule, defaults=defaults, view_func=cls.as_view(endpoint), methods=methods)
         return bp

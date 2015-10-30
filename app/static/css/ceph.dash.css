@@ -18,6 +18,22 @@
     font-weight: bold;
 }
 
+.panel-dialog {
+    background-color: #2e3338;
+    border: 5px solid rgba(0,0,0, 0.4);
+    height: 100px;
+    left: 50%;
+    margin: -200px 0 0 -200px;
+    padding: 1px;
+    position: fixed !important; /* 浮动对话框 */
+    position: absolute;
+    top: 50%;
+    width: 400px;
+    z-index: 5;
+    border-radius: 5px;
+    display: none;
+}
+
 .cd-collapsable h3:after {
     font-family: 'Glyphicons Halflings';
     content: "\e113";

@@ -44,8 +44,11 @@ def list_pools(cluster):
 def getpoolstatus(cluster, poolname):
     with cluster.open_ioctx(poolname) as ioctxobj:
         status = ioctxobj.get_stats()
+        print status
         return status
 
+def createpool(cluster, poolname):
+    cluster.create_pool(poolname)
 
 class PoolsResource(ApiResource):
     """
@@ -55,12 +58,18 @@ class PoolsResource(ApiResource):
     endpoint = 'pools'
     url_prefix = '/pools'
     url_rules = {
-        'poollist': {
+        'pool_list': {
             'rule': '/',
+            'method':['GET'],
             'defaults': {'poolname': None},
         },
-        'poolstatus':{
-            'rule': '/<poolname>'
+        'pool_create':{
+            'rule': '/',
+            'method':['POST'],
+        },
+        'pool_operate':{
+            'rule': '/<poolname>',
+            'method':['GET', 'PUT', 'DELETE']
         }
     }
 
@@ -79,3 +88,12 @@ class PoolsResource(ApiResource):
                 poolstatus = getpoolstatus(cluster, str(poolname))
                 return render_template('pool.html', poolname=poolname, 
                                        poolstatus=poolstatus, config=self.config)
+
+    def post(self):
+        poolname = request.form['poolname']
+        if poolname is None:
+            return jsonify(status="fail")
+        else:
+            with Rados(**self.clusterprop) as cluster:
+                createpool(cluster, str(poolname))
+                return jsonify(status="success")
