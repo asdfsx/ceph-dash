@@ -47,6 +47,7 @@
                   <a href="/pools/{{ pool }}">status</a>
                   <a href="/snaps/{{ pool }}">snaps</a>
                   <a href="/objects/{{ pool }}">objects</a>
+                  <a href="#" onclick="deletepool('{{ pool }}')">delete</a>
               </td>
           </tr>
           {% endfor %}
@@ -90,7 +91,19 @@
                }
            })
        }
+       function deletepool(poolname){
+           $.ajax({
+               url: '/pools/'+poolname,
+               type: 'DELETE',
+               success: function( response ) {
+                   location.reload()
+               },
+               error: function(data) {
+                   alert(2)
+               }
 
+           })
+       }
   </script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

@@ -50,6 +50,11 @@ def getpoolstatus(cluster, poolname):
 def createpool(cluster, poolname):
     cluster.create_pool(poolname)
 
+
+def deletepool(cluster, poolname):
+    cluster.delete_pool(poolname)
+
+
 class PoolsResource(ApiResource):
     """
     Endpoint that shows overall cluster status
@@ -96,4 +101,12 @@ class PoolsResource(ApiResource):
         else:
             with Rados(**self.clusterprop) as cluster:
                 createpool(cluster, str(poolname))
+                return jsonify(status="success")
+
+    def delete(self, poolname):
+        if poolname is None:
+            return jsonify(status="fail")
+        else:
+            with Rados(**self.clusterprop) as cluster:
+                deletepool(cluster, str(poolname))
                 return jsonify(status="success")
