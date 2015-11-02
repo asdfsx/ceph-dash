@@ -85,15 +85,15 @@ def get_unhealthy_osd_details(osd_status):
     return unhealthy_osds
 
 
-class DashboardResource(ApiResource):
+class DisksResource(ApiResource):
     """
     Endpoint that shows overall cluster status
     """
 
-    endpoint = 'dashboard'
-    url_prefix = '/'
+    endpoint = 'disks'
+    url_prefix = '/disks'
     url_rules = {
-        'index': {
+        'disklist': {
             'rule': '/',
         }
     }
@@ -105,25 +105,20 @@ class DashboardResource(ApiResource):
 
     def get(self):
         with Rados(**self.clusterprop) as cluster:
-            cluster_status = CephClusterCommand(cluster, prefix='status', format='json')
-            if 'err' in cluster_status:
-                abort(500, cluster_status['err'])
-
-            # check for unhealthy osds and get additional osd infos from cluster
-            total_osds = cluster_status['osdmap']['osdmap']['num_osds']
-            in_osds = cluster_status['osdmap']['osdmap']['num_up_osds']
-            up_osds = cluster_status['osdmap']['osdmap']['num_in_osds']
-
-            if up_osds < total_osds or in_osds < total_osds:
-                osd_status = CephClusterCommand(cluster, prefix='osd tree', format='json')
-                if 'err' in osd_status:
-                    abort(500, osd_status['err'])
-
-                # find unhealthy osds in osd tree
-                cluster_status['osdmap']['details'] = get_unhealthy_osd_details(osd_status)
-
-            if request.mimetype == 'application/json':
-                return jsonify(cluster_status)
-            else:
-                return render_template('status.html', data=cluster_status, config=self.config)
+            disk_status = CephClusterCommand(cluster, prefix='osd df', format='json')
+            if 'err' in disk_status:
+                abort(500, disk_status['err'])
+            summary = disk_status['summary']
+ 
+            headline = []
+            nodes = []
+            for key in disk_status['nodes'][0]:
+                headline.append(key)
+            nodes.append(headline)
+            for node in disk_status['nodes']:
+                tmp = []
+                for k in headline:
+                    tmp.append(node[k])
+                nodes.append(tmp)
+            return render_template('disks.html', summary=summary, nodes=nodes, config=self.config)
 

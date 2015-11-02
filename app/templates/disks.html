@@ -11,7 +11,7 @@
 <body>
   <div class="container">
     <div class="well">
-      <h1>Ceph Image</h1>
+      <h1>Ceph Images in Pool: {{ poolname }}</h1>
       <p>
         <!--show warning icon if data is getting to old-->
         <span id="last_update" style="display:none;" class="glyphicon glyphicon-warning-sign icon-warn"></span>
@@ -24,35 +24,52 @@
         <div class="panel-body">
             <a href="/">Dash</a>
             <a href="/pools/">Pool</a>
-            <a href="/images/{{ poolname }}">Images</a>
             <a href="/disks/">Disk</a>
         </div>
     </div>
 
-    <!--START CEPH CLUSTER POOL STATUS-->
+    <!--START CEPH CLUSTER DISK SUMMARY-->
     <div class="panel panel-primary">
       <div class="panel-heading cd-collapsable">
         <h3 class="panel-title">
-          Ceph Cluster POOL Status
+          Ceph Cluster Disk Summary
         </h3>
       </div>
       <!--here we add the overall status-->
-      <div class="panel-body" id="overall_status">
-          <div class="panel-row">
-              Pool:{{ poolname }} | Image:{{ imagename }}
-              <table class="table table-condensed">
-              {% for key in imagestatus %}
+      <div class="panel-body">
+          Summary:
+          <table class="table table-condensed">
+              {% for key in summary %}
               <tr>
-                  <td class="text-success">{{ key }}</td>
-                  <td class="text-success">{{ imagestatus[key] }}</td>
+                  <td>{{ key }}</td>
+                  <td>{{ summary[key] }}</td>
               </tr>
               {% endfor %}
-              </table>
-          </div>
+          </table>
       </div>
     </div>
-    <!--END CEPH OVERALL CLUSTER STATUS-->
+    <!--END CEPH OVERALL CLUSTER DISK SUMMARY-->
 
+
+    <!--START CEPH CLUSTER DISK DETAIL-->
+    <div class="panel panel-primary">
+      <div class="panel-heading cd-collapsable">
+        <h3 class="panel-title">
+          Ceph Cluster Disk Detail
+        </h3>
+      </div>
+      <div class="panel-body">
+          <table class="table table-condensed">
+          {% for node in nodes %}
+          <tr>
+              {% for value in node %}
+              <td>{{ value }}</td>
+              {% endfor %}
+          </tr>
+          {% endfor %}
+          </table>
+    </div>
+    <!--END CEPH OVERALL CLUSTER DISK DETAIL-->
   </div>
 
   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
