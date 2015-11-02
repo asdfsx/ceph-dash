@@ -36,6 +36,20 @@ class CephClusterProperties(dict):
             self['name'] = config['client_name']
 
 
+class CephClusterCommand(dict):
+    """
+    Issue a ceph command on the given cluster and provide the returned json
+    """
+
+    def __init__(self, cluster, **kwargs):
+        dict.__init__(self)
+        ret, buf, err = cluster.mon_command(json.dumps(kwargs), '', timeout=5)
+        if ret != 0:
+            self['err'] = err
+        else:
+            self.update(json.loads(buf))
+
+
 def list_pools(cluster):
     pools = cluster.list_pools()
     return pools
@@ -54,6 +68,12 @@ def createpool(cluster, poolname):
 def deletepool(cluster, poolname):
     cluster.delete_pool(poolname)
 
+
+##################
+#     ceph df result
+#   {u'pools': [{u'stats': {u'bytes_used': 196460930, u'max_avail': 169573305206, u'objects': 2734, u'kb_used': 191857}, u'name': u'rbd', u'id': 4}, {u'stats': {u'bytes_used': 72614311, u'max_avail': 169573305206, u'objects': 92, u'kb_used': 70913}, u'name': u'mypool', u'id': 5}, {u'stats': {u'bytes_used': 0, u'max_avail': 169573305206, u'objects': 0, u'kb_used': 0}, u'name': u'flask_test', u'id': 13}], 
+#    u'stats': {u'total_used_bytes': 930623488, u'total_bytes': 509773004800, u'total_avail_bytes': 508842381312}}
+##################
 
 class PoolsResource(ApiResource):
     """
@@ -86,8 +106,25 @@ class PoolsResource(ApiResource):
     def get(self, poolname):
         if poolname is None:
             with Rados(**self.clusterprop) as cluster:
-                pools = list_pools(cluster)
-                return render_template('pools.html', pools=pools, config=self.config)
+                pool_status = CephClusterCommand(cluster, prefix='df', format='json')
+                if 'err' in pool_status:
+                    abort(500, pool_status['err'])
+                stats = [['total_used_bytes','total_bytes','total_avail_bytes',],
+                         [pool_status['stats']['total_used_bytes'],
+                          pool_status['stats']['total_bytes'],
+                          pool_status['stats']['total_avail_bytes'],]]
+
+                title = ['id','name','objects','bytes_used','kb_used','max_avail']
+                pools = []
+                for pool in pool_status['pools']:
+                    tmp = {'id': pool['id'], 'name': pool['name'],
+                           'objects': pool['stats']['objects'], 
+                           'bytes_used': pool['stats']['bytes_used'],
+                           'kb_used': pool['stats']['kb_used'], 
+                           'max_avail': pool['stats']['max_avail'],}
+                    pools.append(tmp)
+                    
+                return render_template('pools.html', stats=stats, title=title, pools=pools, config=self.config)
         else:
             with Rados(**self.clusterprop) as cluster:
                 poolstatus = getpoolstatus(cluster, str(poolname))

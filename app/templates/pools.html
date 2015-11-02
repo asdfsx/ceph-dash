@@ -23,9 +23,31 @@
     <div class="panel panel-primary">
         <div class="panel-body">
             <a href="/">Dash</a>
-            Pool
+            <a href="/pools/">Pool</a>
+            <a href="/disks/">Disk</a>
         </div>
     </div>
+
+    <!--START CEPH CLUSTER GLOBAL POOL STATS-->
+    <div class="panel panel-primary">
+      <div class="panel-heading cd-collapsable">
+        <h3 class="panel-title">
+          Ceph Cluster Global Pool Stats
+        </h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-condensed">
+          {% for stat in stats %}
+          <tr>
+            {% for s in stat %}
+                <td>{{ s }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    <!--END CEPH CLUSTER GLOBAL POOL STATS-->
 
     <!--START CEPH CLUSTER POOLS-->
     <div class="panel panel-primary">
@@ -40,18 +62,29 @@
       </div>
       <div class="panel-body">
           <table class="table table-condensed">
-          {% for pool in pools %}
-          <tr>
-              <td>{{ pool }}<td>
-              <td>
-                  <a href="/pools/{{ pool }}">status</a>
-                  <a href="/snaps/{{ pool }}">snaps</a>
-                  <a href="/objects/{{ pool }}">objects</a>
-                  <a href="/images/{{ pool }}">images</a>
-                  <a href="#" onclick="deletepool('{{ pool }}')">delete</a>
-              </td>
-          </tr>
-          {% endfor %}
+              <tr>
+              {% for t in title %}
+                  <td>{{ t }}</td>
+              {% endfor %}
+                  <td>operate</td>
+              </tr>
+              {% for pool in pools %}
+              <tr>
+                  <td>{{ pool.id }}</td>
+                  <td>{{ pool.name }}</td>
+                  <td>{{ pool.objects}}</td>
+                  <td>{{ pool.bytes_used }}</td>
+                  <td>{{ pool.kb_used }}</td>
+                  <td>{{ pool.max_avail }}</td>
+                  <td>
+                      <a href="/pools/{{ pool.name }}">status</a>
+                      <a href="/snaps/{{ pool.name }}">snaps</a>
+                      <a href="/objects/{{ pool.name }}">objects</a>
+                      <a href="/images/{{ pool.name }}">images</a>
+                      <a href="#" onclick="deletepool('{{ pool.name }}')">delete</a>
+                  </td>
+              </tr>
+              {% endfor %}
           </table>
       </div>
     </div>

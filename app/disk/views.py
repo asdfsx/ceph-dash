@@ -49,40 +49,15 @@ class CephClusterCommand(dict):
         else:
             self.update(json.loads(buf))
 
-
-def find_host_for_osd(osd, osd_status):
-    """ find host for a given osd """
-
-    for obj in osd_status['nodes']:
-        if obj['type'] == 'host':
-            if osd in obj['children']:
-                return obj['name']
-
-    return 'unknown'
-
-
-def get_unhealthy_osd_details(osd_status):
-    """ get all unhealthy osds from osd status """
-
-    unhealthy_osds = list()
-
-    for obj in osd_status['nodes']:
-        if obj['type'] == 'osd':
-            # if OSD does not exists (DNE in osd tree) skip this entry
-            if obj['exists'] == 0:
-                continue
-            if obj['status'] == 'down' or obj['status'] == 'out':
-                # It is possible to have one host in more than one branch in the tree.
-                # Add each unhealthy OSD only once in the list
-                entry = {
-                    'name': obj['name'],
-                    'status': obj['status'],
-                    'host': find_host_for_osd(obj['id'], osd_status)
-                }
-                if entry not in unhealthy_osds:
-                    unhealthy_osds.append(entry)
-
-    return unhealthy_osds
+###################
+#
+#         ceph osd df result
+#    {u'nodes': [{u'kb': 99565040, u'name': u'osd.0', u'type_id': 0, u'reweight': 1.0, u'crush_weight': 0.089996, u'utilization': 0.169312, u'depth': 2, u'kb_avail': 99396464, u'kb_used': 168576, u'var': 0.927465, u'type': u'osd', u'id': 0}, {u'kb': 99565040, u'name': u'osd.1', u'type_id': 0, u'reweight': 1.0, u'crush_weight': 0.089996, u'utilization': 0.206579, u'depth': 2, u'kb_avail': 99359360, u'kb_used': 205680, u'var': 1.131602, u'type': u'osd', u'id': 1}, {u'kb': 99565040, u'name': u'osd.2', u'type_id': 0, u'reweight': 1.0, u'crush_weight': 0.089996, u'utilization': 0.204144, u'depth': 2, u'kb_avail': 99361784, u'kb_used': 203256, u'var': 1.118266, u'type': u'osd', u'id': 2}, {u'kb': 99565040, u'name': u'osd.3', u'type_id': 0, u'reweight': 1.0, u'crush_weight': 0.089996, u'utilization': 0.1821, u'depth': 2, u'kb_avail': 99383732, u'kb_used': 181308, u'var': 0.997513, u'type': u'osd', u'id': 3}, {u'kb': 99565040, u'name': u'osd.5', u'type_id': 0, u'reweight': 1.0, u'crush_weight': 0.089996, u'utilization': 0.150635, u'depth': 2, u'kb_avail': 99415060, u'kb_used': 149980, u'var': 0.825154, u'type': u'osd', u'id': 5}], 
+#     u'stray': [], 
+#     u'summary': {u'total_kb': 497825200, u'dev': 0.021155, u'max_var': 1.131602, u'total_kb_avail': 496916400, u'min_var': 0.825154, u'average_utilization': 0.182554, u'total_kb_used': 908800}
+#    }
+#
+###################
 
 
 class DisksResource(ApiResource):
