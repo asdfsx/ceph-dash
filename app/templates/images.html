@@ -11,7 +11,7 @@
 <body>
   <div class="container">
     <div class="well">
-      <h1>Ceph Pool</h1>
+      <h1>Ceph Images in Pool: {{ poolname }}</h1>
       <p>
         <!--show warning icon if data is getting to old-->
         <span id="last_update" style="display:none;" class="glyphicon glyphicon-warning-sign icon-warn"></span>
@@ -23,32 +23,25 @@
     <div class="panel panel-primary">
         <div class="panel-body">
             <a href="/">Dash</a>
-            Pool
+            <a href="/pools">Pool</a>
         </div>
     </div>
 
-    <!--START CEPH CLUSTER POOLS-->
+    <!--START CEPH CLUSTER POOL SNAPS-->
     <div class="panel panel-primary">
       <div class="panel-heading cd-collapsable">
         <h3 class="panel-title">
-          Ceph Cluster Pools
+          Ceph Cluster Pool Snaps
         </h3>
       </div>
       <!--here we add the overall status-->
       <div class="panel-body">
-          <a href="#" onclick="showbg()">create</a>
-      </div>
-      <div class="panel-body">
           <table class="table table-condensed">
-          {% for pool in pools %}
+          {% for image in images %}
           <tr>
-              <td>{{ pool }}<td>
+              <td>{{ image }}</td>
               <td>
-                  <a href="/pools/{{ pool }}">status</a>
-                  <a href="/snaps/{{ pool }}">snaps</a>
-                  <a href="/objects/{{ pool }}">objects</a>
-                  <a href="/images/{{ pool }}">images</a>
-                  <a href="#" onclick="deletepool('{{ pool }}')">delete</a>
+                  <a href="/image/{{ poolname }}/{{ image }}">stat</a>
               </td>
           </tr>
           {% endfor %}
@@ -58,54 +51,7 @@
     <!--END CEPH OVERALL CLUSTER STATUS-->
 
   </div>
-  <div id="createpool" class="pnel panel-primary panel-dialog" >
-    <div class="panel-heading cd-collapsable">
-        <h1 class="panel-title">
-          Create Pool
-        </h1>
-      </div>
-    <div class="panel-body"> 
-        poolname: <input id="poolname" name="poolname" value="poolname"/>
-        <input type="button" value="确定" class="btn1" onclick="createpool();"/>
-        <input type="button" value="取消"class="btn2" onclick="closebg();"/>
-    </div>
-  </div>
-  <script type="text/javascript">
-       function showbg(){
-           $("#createpool").show()
-       }
-       function closebg(){
-           $("#createpool").hide()
-       }
-       function createpool(){
-           newpoolname = $("#poolname").val()
-           $.ajax({
-               url: '/pools/',
-               type: 'POST',
-               data: {poolname:""+newpoolname},
-               success: function( response ) {
-                   $("#createpool").hide()
-                   location.reload()
-               },
-               error: function(data) {  
-                   alert(2)
-               }
-           })
-       }
-       function deletepool(poolname){
-           $.ajax({
-               url: '/pools/'+poolname,
-               type: 'DELETE',
-               success: function( response ) {
-                   location.reload()
-               },
-               error: function(data) {
-                   alert(2)
-               }
 
-           })
-       }
-  </script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/globalize.min.js') }}"></script>

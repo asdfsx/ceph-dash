@@ -52,7 +52,7 @@ class ObjectsResource(ApiResource):
     endpoint = 'objects'
     url_prefix = '/objects'
     url_rules = {
-        'objectlist': {
+        'objectempty': {
             'rule': '/',
             'defaults': {'poolname': None},
         },
@@ -68,7 +68,7 @@ class ObjectsResource(ApiResource):
 
     def get(self, poolname):
         if poolname is None:
-            return redirect(url_for('pools'))
+            return redirect('/pools/')
         else:
             with Rados(**self.clusterprop) as cluster:
                 objects = getobjectlist(cluster, str(poolname))

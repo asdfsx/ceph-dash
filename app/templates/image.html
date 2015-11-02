@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Ceph Dashboard</title>
+  <link href="{{ url_for('static', filename='css/bootstrap.min.slate.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/ceph.dash.css') }}" rel="stylesheet">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon.png') }}" />
+</head>
+<body>
+  <div class="container">
+    <div class="well">
+      <h1>Ceph Image</h1>
+      <p>
+        <!--show warning icon if data is getting to old-->
+        <span id="last_update" style="display:none;" class="glyphicon glyphicon-warning-sign icon-warn"></span>
+        <!--add cluster fsid for informational purposes-->
+        <small id="cluster_fsid"></small>
+      </p>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-body">
+            <a href="/">Dash</a>
+            <a href="/pools">Pool</a>
+            <a href="/images/{{ poolname }}">Images</a>
+        </div>
+    </div>
+
+    <!--START CEPH CLUSTER POOL STATUS-->
+    <div class="panel panel-primary">
+      <div class="panel-heading cd-collapsable">
+        <h3 class="panel-title">
+          Ceph Cluster POOL Status
+        </h3>
+      </div>
+      <!--here we add the overall status-->
+      <div class="panel-body" id="overall_status">
+          <div class="panel-row">
+              Pool:{{ poolname }} | Image:{{ imagename }}
+              <table class="table table-condensed">
+              {% for key in imagestatus %}
+              <tr>
+                  <td class="text-success">{{ key }}</td>
+                  <td class="text-success">{{ imagestatus[key] }}</td>
+              </tr>
+              {% endfor %}
+              </table>
+          </div>
+      </div>
+    </div>
+    <!--END CEPH OVERALL CLUSTER STATUS-->
+
+  </div>
+
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/globalize.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/dx.chartjs.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.flot.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.flot.time.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.flot.byte.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.flot.tooltip.js') }}"></script>
+
+</body>
+</html>

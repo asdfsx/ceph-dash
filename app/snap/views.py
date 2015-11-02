@@ -52,7 +52,7 @@ class SnapsResource(ApiResource):
     endpoint = 'snaps'
     url_prefix = '/snaps'
     url_rules = {
-        'snaplist': {
+        'snapempty': {
             'rule': '/',
             'defaults': {'poolname': None},
         },
@@ -67,9 +67,9 @@ class SnapsResource(ApiResource):
         self.clusterprop = CephClusterProperties(self.config)
 
     def get(self, poolname):
+        print poolname
         if poolname is None:
-            print '-------', url_for('poollist')
-            return redirect(url_for('poollist'))
+            return redirect("/pools/")
         else:
             with Rados(**self.clusterprop) as cluster:
                 snaps = getsnaplist(cluster, str(poolname))

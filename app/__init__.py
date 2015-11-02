@@ -67,4 +67,11 @@ app.register_blueprint(SnapsResource.as_blueprint())
 from app.object.views import ObjectsResource
 app.register_blueprint(ObjectsResource.as_blueprint())
 
+from app.image.views import ImagesResource
+app.register_blueprint(ImagesResource.as_blueprint()) 
+
+from app.image.views import ImageResource
+app.register_blueprint(ImageResource.as_blueprint())
+
+
 #print app.url_map
