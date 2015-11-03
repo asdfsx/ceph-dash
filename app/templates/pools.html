@@ -81,7 +81,6 @@
                       <a href="/snaps/{{ pool['name'] }}">snaps</a>
                       <a href="/objects/{{ pool['name'] }}">objects</a>
                       <a href="/images/{{ pool['name'] }}">images</a>
-                      <a href="#" onclick="deletepool('{{ pool['name'] }}')">delete</a>
                   </td>
               </tr>
               {% endfor %}
@@ -123,19 +122,6 @@
                error: function(data) {  
                    alert(2)
                }
-           })
-       }
-       function deletepool(poolname){
-           $.ajax({
-               url: '/pools/'+poolname,
-               type: 'DELETE',
-               success: function( response ) {
-                   location.reload()
-               },
-               error: function(data) {
-                   alert(2)
-               }
-
            })
        }
   </script>
