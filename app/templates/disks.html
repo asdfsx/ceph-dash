@@ -38,12 +38,28 @@
       <!--here we add the overall status-->
       <div class="panel-body">
           <table class="table table-condensed">
-              {% for key in summary %}
               <tr>
-                  <td>{{ key }}</td>
-                  <td>{{ summary[key] }}</td>
+                  <td>min_var</td>
+                  <td>max_var</td>
+                  <td>dev</td>
+                  <td>total_kb_used</td>
+                  <td>total_kb_avail</td> 
+                  <td>total_kb</td>
+                  <td>average_utilization</td> 
+                  <td>max_osd</td> 
+                  <td>epoch</td>
               </tr>
-              {% endfor %}
+              <tr>
+                  <td>{{ summary['min_var'] }}</td>
+                  <td>{{ summary['max_var'] }}</td>
+                  <td>{{ summary['dev'] }}</td>
+                  <td>{{ summary['total_kb_used'] }}</td>
+                  <td>{{ summary['total_kb_avail'] }}</td>
+                  <td>{{ summary['total_kb'] }}</td>
+                  <td>{{ summary['average_utilization'] }}</td> 
+                  <td>{{ summary['max_osd'] }}</td>
+                  <td>{{ summary['epoch'] }}</td>
+              </tr>
           </table>
       </div>
     </div>
@@ -59,13 +75,24 @@
       </div>
       <div class="panel-body">
           <table class="table table-condensed">
-          {% for node in nodes %}
-          <tr>
-              {% for value in node %}
-              <td>{{ value }}</td>
+              <tr>
+              {% for t in title %}
+                  <td>{{ t }}</td>
               {% endfor %}
-          </tr>
-          {% endfor %}
+              </tr>
+              {% for id in nodes %}
+              <tr>
+                  <td>{{ nodes[id]['name'] }}</td>
+                  <td>{{ nodes[id]['var'] }}</td>
+                  <td>{{ nodes[id]['crush_weight'] }}</td>
+                  <td>{{ nodes[id]['utilization'] }}</td>
+                  <td>{{ nodes[id]['kb_used'] }}</td>
+                  <td>{{ nodes[id]['kb_avail'] }}</td>
+                  <td>{{ nodes[id]['kb'] }}</td>
+                  <td>{{ nodes[id]['apply_latency_ms'] }}</td>
+                  <td>{{ nodes[id]['commit_latency_ms'] }}</td> 
+              </tr>
+              {% endfor %}
           </table>
     </div>
     <!--END CEPH OVERALL CLUSTER DISK DETAIL-->

@@ -70,18 +70,18 @@
               </tr>
               {% for pool in pools %}
               <tr>
-                  <td>{{ pool.id }}</td>
-                  <td>{{ pool.name }}</td>
-                  <td>{{ pool.objects}}</td>
-                  <td>{{ pool.bytes_used }}</td>
-                  <td>{{ pool.kb_used }}</td>
-                  <td>{{ pool.max_avail }}</td>
+                  <td>{{ pool['id'] }}</td>
+                  <td>{{ pool['name'] }}</td>
+                  <td>{{ pool['objects']}}</td>
+                  <td>{{ pool['bytes_used'] }}</td>
+                  <td>{{ pool['kb_used'] }}</td>
+                  <td>{{ pool['max_avail'] }}</td>
                   <td>
-                      <a href="/pools/{{ pool.name }}">status</a>
-                      <a href="/snaps/{{ pool.name }}">snaps</a>
-                      <a href="/objects/{{ pool.name }}">objects</a>
-                      <a href="/images/{{ pool.name }}">images</a>
-                      <a href="#" onclick="deletepool('{{ pool.name }}')">delete</a>
+                      <a href="/pools/{{ pool['name'] }}">status</a>
+                      <a href="/snaps/{{ pool['name'] }}">snaps</a>
+                      <a href="/objects/{{ pool['name'] }}">objects</a>
+                      <a href="/images/{{ pool['name'] }}">images</a>
+                      <a href="#" onclick="deletepool('{{ pool['name'] }}')">delete</a>
                   </td>
               </tr>
               {% endfor %}
