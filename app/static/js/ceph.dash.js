@@ -1,6 +1,6 @@
 $(function () {
     // global variable to configure refresh interval and timeout (in seconds!)
-    var refreshInterval = 5;
+    var refreshInterval = 10;
     var refreshTimeout = 3;
 
     // calculate outdated warning thresholds
@@ -317,6 +317,7 @@ $(function () {
             monmapMons = data['monmap']['mons'];
             timechekMons = data['health']['timechecks']['mons'];
             // }}}
+            mon_status = data['mon_status']
 
             // Update Content {{{
             // ----------------------------------------------------------------
@@ -396,17 +397,26 @@ $(function () {
             $("#overall_status").append('</ul>');
 
             // update monitor status
-            $("#monitor_status").empty();
-            $.each(monmapMons, function(index, mon) {
-                health = 'HEALTH_ERR'
-                $.each(timechekMons, function(index, mon_health) {
-                    if (mon['name'] == mon_health['name']) {
-                        health = mon_health['health'];
-                    }
-                });
-                msg = 'Monitor ' + mon['name'].toUpperCase() + ': ' + health;
-                $("#monitor_status").append('<div class="col-md-4">' + message(ceph2bootstrap[health], msg) + '</div>');
+            //$("#monitor_status").empty();
+            //$.each(monmapMons, function(index, mon) {
+            //    health = 'HEALTH_ERR'
+            //    $.each(timechekMons, function(index, mon_health) {
+            //        if (mon['name'] == mon_health['name']) {
+            //            health = mon_health['health'];
+            //        }
+            //    });
+            //    msg = 'Monitor ' + mon['name'].toUpperCase() + ': ' + health;
+            //    $("#monitor_status").append('<div class="col-md-4">' + message(ceph2bootstrap[health], msg) + '</div>');
+            //});
+ 
+            // update mon_status by asdfsx
+            mon_status_table = '<table class="table table-condensed"><tr><td>node</td><td>addr</td><td>state</td></tr>'
+            $.each(mon_status, function(index, mon) {
+                mon_status_table += '<tr><td>'+mon['name']+'</td><td>'+mon['addr']+'</td><td>'+mon['state']+'</td></tr>'
             });
+            mon_status_table += '</table>'
+            $("#mon_status").empty();
+            $("#mon_status").append(mon_status_table);
 
             if ($('#graphite1').length > 0) {
                 // update graphite graphs if available

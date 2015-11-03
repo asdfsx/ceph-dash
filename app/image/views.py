@@ -81,7 +81,6 @@ class ImagesResource(ApiResource):
         else:
             with Rados(**self.clusterprop) as cluster:
                 images = getimagelist(cluster, str(poolname))
-                print images
                 return render_template('images.html', poolname=poolname, 
                                        images=images, config=self.config)
 
@@ -117,7 +116,6 @@ class ImageResource(ApiResource):
         else:
             with Rados(**self.clusterprop) as cluster:
                 stat = getimagestat(cluster, str(poolname), str(imagename))
-                print stat
                 return render_template('image.html', 
                                        poolname=poolname, imagename=imagename,
                                        imagestatus=stat, config=self.config)
