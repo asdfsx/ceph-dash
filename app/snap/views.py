@@ -14,6 +14,8 @@ from flask.views import MethodView
 
 from rados import Rados
 from rados import Error as RadosError
+from rbd import RBD
+from rbd import Image 
 
 from app.base import ApiResource
 
@@ -38,9 +40,10 @@ class CephClusterProperties(dict):
             self['name'] = config['client_name']
 
 
-def getsnaplist(cluster, poolname):
+def getsnaplist(cluster, poolname, imagename):
     with cluster.open_ioctx(poolname) as ioctxobj:
-        snaps = ioctxobj.list_snaps()
+        image = Image(ioctxobj, imagename)
+        snaps = image.list_snaps()
         return snaps
 
 
@@ -52,12 +55,9 @@ class SnapsResource(ApiResource):
     endpoint = 'snaps'
     url_prefix = '/snaps'
     url_rules = {
-        'snapempty': {
-            'rule': '/',
-            'defaults': {'poolname': None},
-        },
-        'snaplist': {
-            'rule': '/<string:poolname>'
+        'snaplist':{
+            'rule': '/<string:poolname>/<string:imagename>',
+            'method':['GET','POST','DELETE'],
         }
     }
 
@@ -66,12 +66,13 @@ class SnapsResource(ApiResource):
         self.config = current_app.config['USER_CONFIG']
         self.clusterprop = CephClusterProperties(self.config)
 
-    def get(self, poolname):
-        print poolname
+    def get(self, poolname, imagename):
         if poolname is None:
             return redirect("/pools/")
+        elif imagename is None:
+            return redirect("/images/"+poolname)
         else:
             with Rados(**self.clusterprop) as cluster:
-                snaps = getsnaplist(cluster, str(poolname))
-                return render_template('snaps.html', poolname=poolname, 
+                snaps = getsnaplist(cluster, str(poolname), str(imagename))
+                return render_template('snaps.html', poolname=poolname, imagename=imagename,
                                        snaps=snaps, config=self.config)

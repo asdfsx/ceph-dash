@@ -38,9 +38,19 @@
       </div>
       <!--here we add the overall status-->
       <div class="panel-body" id="overall_status">
-          <div class="panel-row">
-              Pool:{{ poolname }} | Image:{{ imagename }}
+        <div class="panel-row">
+          <div class="col-md-12">  
+            <div class="panel panel-default"> 
+              <div class="panel-heading">Image Status</div>
               <table class="table table-condensed">
+              <tr>
+                <td>Pool</td>
+                <td>{{ poolname }}</td>
+              </tr>
+              <tr>
+                <td>Image</td>
+                <td>{{ imagename }}</td>
+              </tr>
               {% for key in imagestatus %}
               <tr>
                   <td class="text-success">{{ key }}</td>
@@ -48,7 +58,28 @@
               </tr>
               {% endfor %}
               </table>
+            </div>
           </div>
+        </div>
+      </div>
+      
+      <div class="panel-body">
+        <div class="panel-row">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">Image Watcher</div>
+              <div class="panel-body">
+                <table>
+                {% for watcher in imagestatus['watcher'] %}
+                <tr>
+                  <td>{{ watcher }}</td>
+                </tr>
+                {% endfor%}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!--END CEPH OVERALL CLUSTER STATUS-->

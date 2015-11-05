@@ -58,8 +58,15 @@ def list_pools(cluster):
 def getpoolstatus(cluster, poolname):
     with cluster.open_ioctx(poolname) as ioctxobj:
         status = ioctxobj.get_stats()
-        print status
         return status
+
+def getpoolparameter(cluster, poolname):
+    dump = CephClusterCommand(cluster, prefix="osd dump", format='json')
+    if "err" not in dump:
+        for pool in dump['pools']:
+            if pool['pool_name'] == poolname:
+                return pool
+    return {}
 
 def createpool(cluster, poolname):
     cluster.create_pool(poolname)
@@ -128,8 +135,9 @@ class PoolsResource(ApiResource):
         else:
             with Rados(**self.clusterprop) as cluster:
                 poolstatus = getpoolstatus(cluster, str(poolname))
-                return render_template('pool.html', poolname=poolname, 
-                                       poolstatus=poolstatus, config=self.config)
+                parameters = getpoolparameter(cluster, str(poolname))
+                return render_template('pool.html', poolname=poolname, poolstatus=poolstatus,
+                                       parameters=parameters, config=self.config)
 
     def post(self):
         poolname = request.form['poolname']

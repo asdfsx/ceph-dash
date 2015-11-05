@@ -25,6 +25,7 @@
             <a href="/">Dash</a>
             <a href="/pools/">Pool</a>
             <a href="/disks/">Disk</a>
+            <a href="/images/{{ poolname }}">images</a>
         </div>
     </div>
 
@@ -38,9 +39,16 @@
       <!--here we add the overall status-->
       <div class="panel-body">
           <table class="table table-condensed">
+          <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>size</td>
+          </tr>
           {% for snap in snaps %}
           <tr>
-              <td>{{ str(snap) }}<td>
+              <td>{{ snap['id'] }}</td>
+              <td>{{ snap['name'] }}</td>
+              <td>{{ snap['size'] }}</td>
           </tr>
           {% endfor %}
           </table>

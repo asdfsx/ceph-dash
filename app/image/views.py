@@ -49,7 +49,12 @@ def getimagelist(cluster, poolname):
 def getimagestat(cluster,poolname, imagename):
     with cluster.open_ioctx(poolname) as ioctxobj:
         image = Image(ioctxobj, imagename)
-        return image.stat()
+        stat = image.stat()
+        old_format = image.old_format()
+        feature = image.features()
+        stat['old_format'] = old_format
+        stat['feature'] = feature
+        return stat
 
 
 class ImagesResource(ApiResource):

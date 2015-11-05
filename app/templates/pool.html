@@ -37,17 +37,41 @@
       </div>
       <!--here we add the overall status-->
       <div class="panel-body" id="overall_status">
-          <div class="panel-row">
-              {{ poolname }}
-              <table class="table table-condensed">
-              {% for key in poolstatus %}
-              <tr>
+        <div class="panel-row">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"> Usage of Pool {{ poolname }}</div>
+              <div class="panel-body">
+                <table class="table table-condensed">
+                {% for key in poolstatus %}
+                <tr>
                   <td class="text-success">{{ key }}</td>
                   <td class="text-success">{{ poolstatus[key] }}</td>
-              </tr>
-              {% endfor %}
-              </table>
+                </tr>
+                {% endfor %}
+                </table>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div class="panel-row">
+          <div class="col-md-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"> Parameters of Pool {{ poolname }}</div>
+              <div class="panel-body">
+                <table class="table table-condensed">
+                {% for para in parameters %}
+                <tr>
+                  <td class="text-success">{{ para }}</td>
+                  <td class="text-success">{{ parameters[para] }}</td>
+                </tr>
+                {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!--END CEPH OVERALL CLUSTER STATUS-->
