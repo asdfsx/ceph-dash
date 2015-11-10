@@ -11,7 +11,6 @@ class ApiResource(MethodView):
         name = name or cls.endpoint
         bp = Blueprint(name, cls.__module__, url_prefix=cls.url_prefix)
         for endpoint, options in cls.url_rules.iteritems():
-            print endpoint, options
             url_rule = options.get('rule', '')
             methods = options.get('method',['GET','POST'])
             defaults = options.get('defaults', {})

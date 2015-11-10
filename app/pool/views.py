@@ -116,12 +116,11 @@ class PoolsResource(ApiResource):
                 pool_status = CephClusterCommand(cluster, prefix='df', format='json')
                 if 'err' in pool_status:
                     abort(500, pool_status['err'])
-                stats = [['total_used_bytes','total_bytes','total_avail_bytes',],
-                         [pool_status['stats']['total_used_bytes'],
-                          pool_status['stats']['total_bytes'],
-                          pool_status['stats']['total_avail_bytes'],]]
+                stats = {}
+                stats['total_used_bytes'] = pool_status['stats']['total_used_bytes']
+                stats['total_bytes'] = pool_status['stats']['total_bytes']
+                stats['total_avail_bytes'] = pool_status['stats']['total_avail_bytes']
 
-                title = ['id','name','objects','bytes_used','kb_used','max_avail']
                 pools = []
                 for pool in pool_status['pools']:
                     tmp = {'id': pool['id'], 'name': pool['name'],
@@ -130,8 +129,8 @@ class PoolsResource(ApiResource):
                            'kb_used': pool['stats']['kb_used'], 
                            'max_avail': pool['stats']['max_avail'],}
                     pools.append(tmp)
-                    
-                return render_template('pools.html', stats=stats, title=title, pools=pools, config=self.config)
+                print pools    
+                return render_template('pools.html', stats=stats, pools=pools, config=self.config)
         else:
             with Rados(**self.clusterprop) as cluster:
                 poolstatus = getpoolstatus(cluster, str(poolname))

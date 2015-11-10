@@ -48,7 +48,7 @@
           <tr>
               <td>{{ snap['id'] }}</td>
               <td>{{ snap['name'] }}</td>
-              <td>{{ snap['size'] }}</td>
+              <td>{{ "%s MB" % (snap['size']/1024/1024) }}</td>
           </tr>
           {% endfor %}
           </table>

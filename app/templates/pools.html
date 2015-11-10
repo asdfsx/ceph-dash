@@ -37,13 +37,16 @@
       </div>
       <div class="panel-body">
         <table class="table table-condensed">
-          {% for stat in stats %}
           <tr>
-            {% for s in stat %}
-                <td>{{ s }}</td>
-            {% endfor %}
+            <td>total_used</td>
+            <td>total_avail</td> 
+            <td>total</td> 
           </tr>
-          {% endfor %}
+          <tr>
+            <td>{{ stats['total_used_bytes']/1024/1024 }} MB</td>
+            <td>{{ stats['total_avail_bytes']/1024/1024 }} MB</td>
+            <td>{{ stats['total_bytes']/1024/1024 }} MB</td>
+          </tr>
         </table>
       </div>
     </div>
@@ -63,9 +66,11 @@
       <div class="panel-body">
           <table class="table table-condensed">
               <tr>
-              {% for t in title %}
-                  <td>{{ t }}</td>
-              {% endfor %}
+                  <td>id</td>
+                  <td>name</td>
+                  <td>objects</td>
+                  <td>used</td>
+                  <td>max_avail</td>
                   <td>operate</td>
               </tr>
               {% for pool in pools %}
@@ -73,9 +78,8 @@
                   <td>{{ pool['id'] }}</td>
                   <td>{{ pool['name'] }}</td>
                   <td>{{ pool['objects']}}</td>
-                  <td>{{ pool['bytes_used'] }}</td>
-                  <td>{{ pool['kb_used'] }}</td>
-                  <td>{{ pool['max_avail'] }}</td>
+                  <td>{{ pool['bytes_used']/1024/1024 }} MB</td>
+                  <td>{{ pool['max_avail']/1024/1024 }} MB</td>
                   <td>
                       <a href="/pools/{{ pool['name'] }}">status</a>
                       <a href="/objects/{{ pool['name'] }}">objects</a>

@@ -54,6 +54,8 @@ def getimagestat(cluster,poolname, imagename):
         feature = image.features()
         stat['old_format'] = old_format
         stat['feature'] = feature
+        stat['size'] = "%s MB" % (stat['size']/1024/1024,)
+        stat['obj_size'] = "%s KB" % (stat['obj_size']/1024, )
         return stat
 
 

@@ -42,9 +42,9 @@
                   <td>min_var</td>
                   <td>max_var</td>
                   <td>dev</td>
-                  <td>total_kb_used</td>
-                  <td>total_kb_avail</td> 
-                  <td>total_kb</td>
+                  <td>total_used</td>
+                  <td>total_avail</td> 
+                  <td>total</td>
                   <td>average_utilization</td> 
                   <td>max_osd</td> 
                   <td>epoch</td>
@@ -53,9 +53,9 @@
                   <td>{{ summary['min_var'] }}</td>
                   <td>{{ summary['max_var'] }}</td>
                   <td>{{ summary['dev'] }}</td>
-                  <td>{{ summary['total_kb_used'] }}</td>
-                  <td>{{ summary['total_kb_avail'] }}</td>
-                  <td>{{ summary['total_kb'] }}</td>
+                  <td>{{ summary['total_kb_used']/1024 }} MB</td>
+                  <td>{{ summary['total_kb_avail']/1024 }} MB</td>
+                  <td>{{ summary['total_kb']/1024 }} MB</td>
                   <td>{{ summary['average_utilization'] }}</td> 
                   <td>{{ summary['max_osd'] }}</td>
                   <td>{{ summary['epoch'] }}</td>
@@ -76,9 +76,15 @@
       <div class="panel-body">
           <table class="table table-condensed">
               <tr>
-              {% for t in title %}
-                  <td>{{ t }}</td>
-              {% endfor %}
+                  <td>name</td>
+                  <td>var</td>
+                  <td>crush_weight</td> 
+                  <td>utilization</td> 
+                  <td>used</td> 
+                  <td>avail</td> 
+                  <td>total</td> 
+                  <td>apply_latency_ms</td> 
+                  <td>commit_latency_ms</td> 
               </tr>
               {% for id in nodes %}
               <tr>
@@ -86,9 +92,9 @@
                   <td>{{ nodes[id]['var'] }}</td>
                   <td>{{ nodes[id]['crush_weight'] }}</td>
                   <td>{{ nodes[id]['utilization'] }}</td>
-                  <td>{{ nodes[id]['kb_used'] }}</td>
-                  <td>{{ nodes[id]['kb_avail'] }}</td>
-                  <td>{{ nodes[id]['kb'] }}</td>
+                  <td>{{ nodes[id]['kb_used']/1024 }} MB</td>
+                  <td>{{ nodes[id]['kb_avail']/1024 }} MB</td>
+                  <td>{{ nodes[id]['kb']/1024 }} MB</td>
                   <td>{{ nodes[id]['apply_latency_ms'] }}</td>
                   <td>{{ nodes[id]['commit_latency_ms'] }}</td> 
               </tr>
