@@ -14,6 +14,7 @@ from rados import Rados
 from rados import Error as RadosError
 
 from app.base import ApiResource
+from app.ceph_commands import ceph
 
 class CephClusterProperties(dict):
     """
@@ -112,29 +113,38 @@ class PoolsResource(ApiResource):
 
     def get(self, poolname):
         if poolname is None:
-            with Rados(**self.clusterprop) as cluster:
-                pool_status = CephClusterCommand(cluster, prefix='df', format='json')
-                if 'err' in pool_status:
-                    abort(500, pool_status['err'])
-                stats = {}
-                stats['total_used_bytes'] = pool_status['stats']['total_used_bytes']
-                stats['total_bytes'] = pool_status['stats']['total_bytes']
-                stats['total_avail_bytes'] = pool_status['stats']['total_avail_bytes']
+            cmd = ceph.ceph()
+            isSuccess, execresult = cmd.execute('df')
+            if not isSuccess:
+                abort(500, execresult)
+            pool_status = json.loads(execresult)
+            stats = {}
+            stats['total_used_bytes'] = pool_status['stats']['total_used_bytes']
+            stats['total_bytes'] = pool_status['stats']['total_bytes']
+            stats['total_avail_bytes'] = pool_status['stats']['total_avail_bytes']
 
-                pools = []
-                for pool in pool_status['pools']:
-                    tmp = {'id': pool['id'], 'name': pool['name'],
-                           'objects': pool['stats']['objects'], 
-                           'bytes_used': pool['stats']['bytes_used'],
-                           'kb_used': pool['stats']['kb_used'], 
-                           'max_avail': pool['stats']['max_avail'],}
-                    pools.append(tmp)
-                print pools    
-                return render_template('pools.html', stats=stats, pools=pools, config=self.config)
+            pools = []
+            for pool in pool_status['pools']:
+                tmp = {'id': pool['id'], 'name': pool['name'],
+                       'objects': pool['stats']['objects'], 
+                       'bytes_used': pool['stats']['bytes_used'],
+                       'kb_used': pool['stats']['kb_used'], 
+                       'max_avail': pool['stats']['max_avail'],}
+                pools.append(tmp)
+            return render_template('pools.html', stats=stats, pools=pools, config=self.config)
         else:
             with Rados(**self.clusterprop) as cluster:
+                cmd = ceph.ceph()
+                isSuccess, execresult = cmd.execute('osddump')
+                if not isSuccess:
+                    abort(500, execresult)
+                osddump = json.loads(execresult)
+                parameters = {}
+                if 'pools' in osddump:
+                    for pool in osddump['pools']:
+                        if pool['pool_name'] == poolname:
+                            parameters = pool
                 poolstatus = getpoolstatus(cluster, str(poolname))
-                parameters = getpoolparameter(cluster, str(poolname))
                 return render_template('pool.html', poolname=poolname, poolstatus=poolstatus,
                                        parameters=parameters, config=self.config)
 

@@ -10,44 +10,9 @@ from flask import jsonify
 from flask import current_app
 from flask.views import MethodView
 
-from rados import Rados
-from rados import Error as RadosError
-
 from app.base import ApiResource
+from app.ceph_commands import ceph
 
-class CephClusterProperties(dict):
-    """
-    Validate ceph cluster connection properties
-    """
-
-    def __init__(self, config):
-        dict.__init__(self)
-
-        self['conffile'] = config['ceph_config']
-        self['conf'] = dict()
-
-        if 'keyring' in config:
-            self['conf']['keyring'] = config['keyring']
-        if 'client_id' in config and 'client_name' in config:
-            raise RadosError("Can't supply both client_id and client_name")
-        if 'client_id' in config:
-            self['rados_id'] = config['client_id']
-        if 'client_name' in config:
-            self['name'] = config['client_name']
-
-
-class CephClusterCommand(dict):
-    """
-    Issue a ceph command on the given cluster and provide the returned json
-    """
-
-    def __init__(self, cluster, **kwargs):
-        dict.__init__(self)
-        ret, buf, err = cluster.mon_command(json.dumps(kwargs), '', timeout=5)
-        if ret != 0:
-            self['err'] = err
-        else:
-            self.update(json.loads(buf))
 
 ###################
 #
@@ -100,22 +65,24 @@ class DisksResource(ApiResource):
     def __init__(self):
         MethodView.__init__(self)
         self.config = current_app.config['USER_CONFIG']
-        self.clusterprop = CephClusterProperties(self.config)
 
     def get(self):
-        with Rados(**self.clusterprop) as cluster:
-            disk_status = CephClusterCommand(cluster, prefix='osd df', format='json')
-            if 'err' in disk_status:
-                abort(500, disk_status['err'])
+            cmd = ceph.ceph()
+            isSuccess, execresult = cmd.execute('osddf')
+            if not isSuccess:
+                abort(500, execresult)
+            disk_status = json.loads(execresult)
             summary = disk_status['summary']
- 
-            disk_perf = CephClusterCommand(cluster, prefix='osd perf', format='json')
-            if 'err' in disk_perf:
-                abort(500, disk_perf['err'])
 
-            disk_maxosd = CephClusterCommand(cluster, prefix='osd getmaxosd', format='json')
-            if 'err' in disk_maxosd:
-                abort(500, disk_maxosd['err'])
+            isSuccess, execresult = cmd.execute('osdperf')
+            if not isSuccess:
+                abort(500, execresult)
+            disk_perf = json.loads(execresult)
+
+            isSuccess, execresult = cmd.execute('osdgetmaxosd')
+            if not isSuccess:
+                abort(500, execresult)
+            disk_maxosd = json.loads(execresult)
             summary['max_osd'] = disk_maxosd['max_osd']
             summary['epoch'] = disk_maxosd['epoch']
 
