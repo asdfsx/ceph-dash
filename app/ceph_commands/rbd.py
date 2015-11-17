@@ -9,6 +9,7 @@ class rbd(base.CommandExecutor):
         self.cmdmap = {"ls":"ls --pool %s --format json",
                        "showmapped":"showmapped --format json",
                        "info":"info --pool %s --image %s --format json",
+                       "snapls":"snap ls --pool %s --image %s --format json"
                        }
 
 
@@ -19,6 +20,11 @@ class rbd(base.CommandExecutor):
             else:
                 return False, "need 'pool' in parameters"
         elif cmdname == "info":
+            if 'pool' in para and 'image' in para:
+                return True, self.prefix + self.cmdmap[cmdname] % (para['pool'], para['image'])
+            else:
+                return False, "need 'pool' or 'image' in parameters"
+        elif cmdname == "snapls":
             if 'pool' in para and 'image' in para:
                 return True, self.prefix + self.cmdmap[cmdname] % (para['pool'], para['image'])
             else:
