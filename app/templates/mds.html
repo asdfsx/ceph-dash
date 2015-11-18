@@ -11,7 +11,7 @@
 <body>
   <div class="container">
     <div class="well">
-      <h1>Ceph Image</h1>
+      <h1>Ceph Snap in Pool: {{ poolname }}</h1>
       <p>
         <!--show warning icon if data is getting to old-->
         <span id="last_update" style="display:none;" class="glyphicon glyphicon-warning-sign icon-warn"></span>
@@ -26,57 +26,29 @@
             <a href="/pools/">Pool</a>
             <a href="/disks/">Disk</a>
             <a href="/mds/">MDS</a>
-            <a href="/images/{{ poolname }}">Images</a>
         </div>
     </div>
 
-    <!--START CEPH CLUSTER POOL STATUS-->
+    <!--START CEPH CLUSTER MDS-->
     <div class="panel panel-primary">
       <div class="panel-heading cd-collapsable">
         <h3 class="panel-title">
-          Ceph Cluster POOL Status
+          Ceph Cluster MDS Map
         </h3>
       </div>
       <!--here we add the overall status-->
-      <div class="panel-body" id="overall_status">
-        <div class="panel-row">
-          <div class="col-md-12">  
-            <div class="panel panel-default"> 
-              <div class="panel-heading">Image Status</div>
-              <table class="table table-condensed">
-              <tr>
-                <td>Pool</td>
-                <td>{{ poolname }}</td>
-              </tr>
-              <tr>
-                <td>Image</td>
-                <td>{{ imagename }}</td>
-              </tr>
-              {% for key in imagestatus %}
-              <tr>
-                  <td class="text-success">{{ key }}</td>
-                  <td class="text-success">{{ imagestatus[key] }}</td>
-              </tr>
-              {% endfor %}
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      
       <div class="panel-body">
-        <div class="panel-row">
-          <div class="col-md-12">
-            <div class="panel panel-default">
-              <div class="panel-heading">Image Watcher</div>
-              <div class="panel-body">
-              </div>
-            </div>
-          </div>
-        </div>
+          <table class="table table-condensed">
+          {% for key in mdstat['mdsmap'] %}
+          <tr>
+              <td>{{ key }}<td>
+              <td>{{ mdstat['mdsmap'][key] }}</td>
+          </tr>
+          {% endfor %}
+          </table>
       </div>
     </div>
-    <!--END CEPH OVERALL CLUSTER STATUS-->
+    <!--END CEPH CLUSTER MDS-->
 
   </div>
 

@@ -21,7 +21,6 @@ class rados(base.CommandExecutor):
 
     def execute(self, cmdname, **para):
         isSuccess, result = self.generate(cmdname, **para)
-        print result
         if isSuccess:
             return True, self.executeCmd(result)
         else:

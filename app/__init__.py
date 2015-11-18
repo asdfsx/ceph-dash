@@ -76,6 +76,9 @@ app.register_blueprint(ImageResource.as_blueprint())
 from app.disk.views import DisksResource
 app.register_blueprint(DisksResource.as_blueprint())
 
+from app.mds.views import MDSResource
+app.register_blueprint(MDSResource.as_blueprint())
+
 
 
 #print app.url_map

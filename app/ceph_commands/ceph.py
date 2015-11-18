@@ -22,6 +22,7 @@ class ceph(base.CommandExecutor):
                        "pgdump":"pg dump --format json",
                        "pgstat":"pg stat --format json",
                        "authlist":"auth list --format json",
+                       "mdstat":"mds stat --format json",
                        }
 
 

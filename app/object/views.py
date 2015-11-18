@@ -43,10 +43,8 @@ class ObjectsResource(ApiResource):
         else:
             cmd = rados.rados()
             isSuccess, execresult = cmd.execute('ls', **{'pool':str(poolname),})
-            print execresult
             if not isSuccess:
                 abort(500, execresult)
             objects = json.loads(execresult)              
-            print objects
             return render_template('objects.html', poolname=poolname, 
                                    objects=objects, config=self.config)
