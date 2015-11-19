@@ -44,9 +44,9 @@
             <td>total</td> 
           </tr>
           <tr>
-            <td>{{ stats['total_used_bytes']/1024/1024 }} MB</td>
-            <td>{{ stats['total_avail_bytes']/1024/1024 }} MB</td>
-            <td>{{ stats['total_bytes']/1024/1024 }} MB</td>
+            <td>{{ "%.3f" % (stats['total_used_bytes']/1024/1024/1024,) }} GB</td>
+            <td>{{ "%.3f" % (stats['total_avail_bytes']/1024/1024/1024,) }} GB</td>
+            <td>{{ "%.3f" % (stats['total_bytes']/1024/1024/1024,) }} GB</td>
           </tr>
         </table>
       </div>
@@ -79,8 +79,8 @@
                   <td>{{ pool['id'] }}</td>
                   <td>{{ pool['name'] }}</td>
                   <td>{{ pool['objects']}}</td>
-                  <td>{{ pool['bytes_used']/1024/1024 }} MB</td>
-                  <td>{{ pool['max_avail']/1024/1024 }} MB</td>
+                  <td>{{ "%.3f" % (pool['bytes_used']/1024/1024/1024,) }} GB</td>
+                  <td>{{ "%.3f" % (pool['max_avail']/1024/1024/1024,) }} GB</td>
                   <td>
                       <a href="/pools/{{ pool['name'] }}">status</a>
                       <a href="/objects/{{ pool['name'] }}">objects</a>

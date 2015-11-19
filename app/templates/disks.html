@@ -54,9 +54,9 @@
                   <td>{{ summary['min_var'] }}</td>
                   <td>{{ summary['max_var'] }}</td>
                   <td>{{ summary['dev'] }}</td>
-                  <td>{{ summary['total_kb_used']/1024 }} MB</td>
-                  <td>{{ summary['total_kb_avail']/1024 }} MB</td>
-                  <td>{{ summary['total_kb']/1024 }} MB</td>
+                  <td>{{ "%.3f" % (summary['total_kb_used']/1024/1024,) }} GB</td>
+                  <td>{{ "%.3f" % (summary['total_kb_avail']/1024/1024,) }} GB</td>
+                  <td>{{ "%.3f" % (summary['total_kb']/1024/1024,) }} GB</td>
                   <td>{{ summary['average_utilization'] }}</td> 
                   <td>{{ summary['max_osd'] }}</td>
                   <td>{{ summary['epoch'] }}</td>
@@ -93,9 +93,9 @@
                   <td>{{ nodes[id]['var'] }}</td>
                   <td>{{ nodes[id]['crush_weight'] }}</td>
                   <td>{{ nodes[id]['utilization'] }}</td>
-                  <td>{{ nodes[id]['kb_used']/1024 }} MB</td>
-                  <td>{{ nodes[id]['kb_avail']/1024 }} MB</td>
-                  <td>{{ nodes[id]['kb']/1024 }} MB</td>
+                  <td>{{ "%.3f" % (nodes[id]['kb_used']/1024/1024,) }} GB</td>
+                  <td>{{ "%.3f" % (nodes[id]['kb_avail']/1024/1024,) }} GB</td>
+                  <td>{{ "%.3f" % (nodes[id]['kb']/1024/1024,) }} GB</td>
                   <td>{{ nodes[id]['apply_latency_ms'] }}</td>
                   <td>{{ nodes[id]['commit_latency_ms'] }}</td> 
               </tr>
